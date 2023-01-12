@@ -1,14 +1,21 @@
 package jadelab1;
 
-import jade.core.*;
-import jade.core.behaviours.*;
-import jade.lang.acl.*;
-import jade.domain.*;
-import jade.domain.FIPAAgentManagement.*;
-import java.net.*;
-import java.io.*;
+import jade.core.Agent;
+import jade.core.behaviours.CyclicBehaviour;
+import jade.domain.DFService;
+import jade.domain.FIPAAgentManagement.DFAgentDescription;
+import jade.domain.FIPAAgentManagement.ServiceDescription;
+import jade.domain.FIPAException;
+import jade.lang.acl.ACLMessage;
+import jade.lang.acl.MessageTemplate;
 
-public class ServiceAgent extends Agent {
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLEncoder;
+
+public class BondAgent extends Agent {
 	protected void setup () {
 		//services registration at DF
 		DFAgentDescription dfad = new DFAgentDescription();
@@ -16,7 +23,7 @@ public class ServiceAgent extends Agent {
 		//service no 1
 		ServiceDescription sd1 = new ServiceDescription();
 		sd1.setType("answers");
-		sd1.setName("polrus");
+		sd1.setName("polita");
 		//add them all
 		dfad.addServices(sd1);
 
@@ -26,7 +33,7 @@ public class ServiceAgent extends Agent {
 			ex.printStackTrace();
 		}
 		
-		addBehaviour(new DictionaryCyclicBehaviour(this));
+		addBehaviour(new NowySlownik(this));
 		//doDelete();
 	}
 	protected void takeDown() {
@@ -75,16 +82,16 @@ public class ServiceAgent extends Agent {
 		return response.substring(response.indexOf("<hr>")+4, response.lastIndexOf("<hr>"));
 	}
 }
-class DictionaryCyclicBehaviour extends CyclicBehaviour
+class NowySlownik extends CyclicBehaviour
 {
-	ServiceAgent agent;
-	public DictionaryCyclicBehaviour(ServiceAgent agent)
+	BondAgent agent;
+	public NowySlownik(BondAgent agent)
 	{
 		this.agent = agent;
 	}
 	public void action()
 	{
-		MessageTemplate template = MessageTemplate.MatchOntology("polrus");
+		MessageTemplate template = MessageTemplate.MatchOntology("polita");
 		ACLMessage message = agent.receive(template);
 		if (message == null)
 		{
@@ -99,7 +106,7 @@ class DictionaryCyclicBehaviour extends CyclicBehaviour
 			String response = "";
 			try
 			{
-				response = agent.makeRequest("fd-pol-rus", content);
+				response = agent.makeRequest("fd-pol-ita", content);
 			}
 			catch (NumberFormatException ex)
 			{
